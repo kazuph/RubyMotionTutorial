@@ -1,23 +1,38 @@
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
-    @window.makeKeyAndVisible
 
-    controller = TapController.alloc.initWithNibName(nil, bundle: nil)
-    nav_controller = UINavigationController.alloc.initWithRootViewController(controller)
+      @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.applicationFrame)
+      @window.makeKeyAndVisible
 
-    alphabet_controller = AlphabetController.alloc.initWithNibName(nil, bundle:nil)
+      # the points we're going to animate to
+      @points = [[0, 0], [50, 0], [0, 50], [50, 50]]
+      @current_index = 0
 
-    other_controller = UIViewController.alloc.initWithNibName(nil, bundle: nil)
-    other_controller.title = "Other"
-    other_controller.view.backgroundColor = UIColor.purpleColor
+      # usual method of adding views to our window
+      @view = UIView.alloc.initWithFrame [@points[@current_index], [100, 100]]
+      @view.backgroundColor = UIColor.blueColor
+      @window.addSubview(@view)
 
-    tab_controller = UITabBarController.alloc.initWithNibName(nil, bundle: nil)
-    # tab_controller.viewControllers = [nav_controller, other_controller]
-    tab_controller.viewControllers = [nav_controller, alphabet_controller, other_controller]
-    @window.rootViewController = tab_controller
+      animate_to_next_point
 
-    true
-
+      true
   end
+  def animate_to_next_point
+      @current_index += 1
+
+      # keep current_index in the range [0,3]
+      @current_index = @current_index % @points.count
+
+      UIView.animateWithDuration(2,
+        delay:1,
+        options:UIViewAnimationOptionCurveLinear,
+        animations: lambda {
+         @view.frame = [@points[@current_index], [100, 100]]
+         },
+         completion:lambda {|finished|
+          self.animate_to_next_point
+      }
+      )
+  end
+
 end
