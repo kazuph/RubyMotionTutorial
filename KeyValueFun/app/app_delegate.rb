@@ -2,6 +2,7 @@ class AppDelegate
   include BW::KVO
 
   attr_accessor :user
+
   def application(application, didFinishLaunchingWithOptions:launchOptions)
 
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.applicationFrame)
@@ -17,6 +18,7 @@ class AppDelegate
     @window.addSubview(@id_label)
 
     self.user = User.new
+
     ["name", "id", "email"].each {|prop|
       observe(self.user,prop) do |old_valude, new_value|
         instanse_variable_get("@#{prop}_label").text = new_value
